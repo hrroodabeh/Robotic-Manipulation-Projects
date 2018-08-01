@@ -7,6 +7,7 @@ import random
 from threading import Thread, Lock
 import sys
 import math
+import time
 
 import actionlib
 import control_msgs.msg
@@ -25,21 +26,24 @@ class RRT_Node:
         self.q = q
         self.p = parent
 
-def getDistance(q1, q2):
+
+def get_distance(q1, q2):
     res = 0
     for i in range(len(q1)):
         res += (q1[i] - q2[i])**2
     return math.sqrt(res)
 
-def findClosest(rrt_nodes, q_new):
+
+def find_closest(rrt_nodes, q_new):
     min_dist = 1000000
     id = -1
     for i in range(len(rrt_nodes)):
-        dist = getDistance(rrt_nodes[i].q, q_new)
+        dist = get_distance(rrt_nodes[i].q, q_new)
         if dist < min_dist:
             id = i
             min_dist = dist
     return id
+
 
 def find_random_q(q_min, q_max, _len):
     q = []
@@ -58,12 +62,23 @@ def get_q_new(q1, q2, length):
         diff.append(q1[i] - q2[i])
         null_q.append(0)
 
-    _len = getDistance(diff, null_q)
+    _len = get_distance(diff, null_q)
     for i in range(n):
         diff[i] = diff[i]/_len
     for i in range(n):
         res.append(q1[i] + diff[i]*length)
     return res
+
+
+def gen_test_points(q1, q2, k):
+    n = len(q1)
+    validation_points = numpy.zeros([k, n])
+    for i in range(n):
+        test_vals = numpy.linspace(min(q1[i], q2[i]), max(q1[i], q2[i]), k)
+        for j in range(k):
+            validation_points[j, i] = test_vals[j]
+    return validation_points
+
 
 def generate_validation_set(q1, q2):
 
@@ -258,8 +273,18 @@ class MoveArm(object):
         req.robot_state.joint_state = current_joint_state
         res = self.state_valid_service(req)
         return res.valid
-        
-     
+
+    def is_path_clear_to(self, q1, q2):
+        n = len(q1)
+        k = 100
+        validation_points = gen_test_points(q1, q2, k)
+        for i in range(k):
+            q_test = []
+            for j in range(n):
+                q_test.append(validation_points[i][j])
+            if not self.is_state_valid(q_test):
+                return False
+        return True
         
     def motion_plan(self, q_start, q_goal, q_min, q_max):
         
@@ -269,17 +294,20 @@ class MoveArm(object):
         rrt_nodes = []
         rrt_nodes.append(RRT_Node(q_start, None))
 
-        MAX_NUM_OF_ITERATIONS = 100
+        MAX_NUM_OF_ITERATIONS = 1000
         BRANCH_LENGTH = 0.5
         NUM_OF_JOINTS = len(q_start)
+        num_nodes = 0
+        starting_time = rospy.get_rostime().secs
+        current_time = rospy.get_rostime().secs
 
-        for i in range(MAX_NUM_OF_ITERATIONS):
+        while num_nodes < 300 and (current_time - starting_time) < 300:
 
             # pick a random q_new within the joint limits
             q_rand = find_random_q(q_min, q_max, NUM_OF_JOINTS)
 
             # find the closest node in the tree to the q_new
-            closest_node = rrt_nodes[findClosest(rrt_nodes, q_rand)]
+            closest_node = rrt_nodes[find_closest(rrt_nodes, q_rand)]
 
             # find a new branch in the direction from q_close to q_new with certain length
             q_new = get_q_new(closest_node.q, q_rand, BRANCH_LENGTH)
@@ -287,23 +315,17 @@ class MoveArm(object):
                 continue
 
             # check if the path is collision free
-            validation_points = generate_validation_set(closest_node.q, q_new)
-            for i in range(len(validation_points)):
-                if not self.is_state_valid(validation_points[i]):
-                    continue
+            if not self.is_path_clear_to(closest_node.q, q_new):
+                continue
 
             # if it's all ok, add it to the tree
             rrt_nodes.append(RRT_Node(q_new, closest_node))
+            num_nodes += 1
 
             # check if there is an open path from the recently added to the goal
-            valid_points_to_goal = generate_validation_set(closest_node.q, q_goal)
-            count = 0
-
-            for i in range(len(valid_points_to_goal)):
-                if not self.is_state_valid(valid_points_to_goal[i]):
-                    count += 1
-            if count == len(valid_points_to_goal):
+            if self.is_path_clear_to(q_new, q_goal):
                 break
+            current_time = rospy.get_rostime().secs
 
         # add goal to the tree
         rrt_nodes.append(RRT_Node(q_goal, rrt_nodes[-1]))
@@ -315,8 +337,9 @@ class MoveArm(object):
         while(end_node.p != None):
             q_list.append(end_node.q)
             end_node = end_node.p
-
-        return q_list.reverse()
+        q_list.append(q_start)
+        q_list.reverse()
+        return q_list
     
     
     def create_trajectory(self, q_list, v_list, a_list, t):
