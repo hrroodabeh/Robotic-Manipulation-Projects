@@ -1,0 +1,8 @@
+prefix=/home/hamid/Desktop/project4/catkin_ws/devel/.private/robot_sim
+
+Name: robot_sim
+Description: Description of robot_sim
+Version: 0.0.0
+Cflags: -I/home/hamid/Desktop/project4/catkin_ws/src/robot_sim/include
+Libs: -L/home/hamid/Desktop/project4/catkin_ws/devel/.private/robot_sim/lib -lrobot_sim
+Requires: roscpp sensor_msgs urdf

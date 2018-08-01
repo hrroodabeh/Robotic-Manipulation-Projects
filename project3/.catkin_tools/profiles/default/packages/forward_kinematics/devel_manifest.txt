@@ -1,0 +1,4 @@
+forward_kinematics
+/home/hamid/Desktop/project3/devel/.private/forward_kinematics/lib/pkgconfig/forward_kinematics.pc /home/hamid/Desktop/project3/devel/lib/pkgconfig/forward_kinematics.pc
+/home/hamid/Desktop/project3/devel/.private/forward_kinematics/share/forward_kinematics/cmake/forward_kinematicsConfig-version.cmake /home/hamid/Desktop/project3/devel/share/forward_kinematics/cmake/forward_kinematicsConfig-version.cmake
+/home/hamid/Desktop/project3/devel/.private/forward_kinematics/share/forward_kinematics/cmake/forward_kinematicsConfig.cmake /home/hamid/Desktop/project3/devel/share/forward_kinematics/cmake/forward_kinematicsConfig.cmake

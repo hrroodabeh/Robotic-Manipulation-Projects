@@ -1,0 +1,5 @@
+Symlinking /home/hamid/Desktop/project4/catkin_ws/devel/lib/librobot_sim.so
+Symlinking /home/hamid/Desktop/project4/catkin_ws/devel/lib/pkgconfig/robot_sim.pc
+Symlinking /home/hamid/Desktop/project4/catkin_ws/devel/lib/robot_sim/robot_sim_bringup
+Symlinking /home/hamid/Desktop/project4/catkin_ws/devel/share/robot_sim/cmake/robot_simConfig-version.cmake
+Symlinking /home/hamid/Desktop/project4/catkin_ws/devel/share/robot_sim/cmake/robot_simConfig.cmake

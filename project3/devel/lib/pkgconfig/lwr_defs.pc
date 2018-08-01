@@ -1,0 +1,1 @@
+/home/hamid/Desktop/project3/devel/.private/lwr_defs/lib/pkgconfig/lwr_defs.pc

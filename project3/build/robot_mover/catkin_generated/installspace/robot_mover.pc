@@ -1,0 +1,8 @@
+prefix=/home/hamid/Desktop/project3/install
+
+Name: robot_mover
+Description: Description of robot_mover
+Version: 0.0.0
+Cflags: 
+Libs: -L/home/hamid/Desktop/project3/install/lib 
+Requires: 

@@ -1,0 +1,1 @@
+/home/hamid/Desktop/project4/catkin_ws/devel/.private/cartesian_control/share/cartesian_control/cmake/cartesian_controlConfig.cmake

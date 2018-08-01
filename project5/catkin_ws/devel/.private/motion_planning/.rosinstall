@@ -1,0 +1,2 @@
+- setup-file:
+    local-name: /home/hamid/Desktop/project5/catkin_ws/devel/.private/motion_planning/setup.sh

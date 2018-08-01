@@ -1,0 +1,4 @@
+lwr_robot/lwr_defs
+/home/hamid/Desktop/project3/devel/.private/lwr_defs/lib/pkgconfig/lwr_defs.pc /home/hamid/Desktop/project3/devel/lib/pkgconfig/lwr_defs.pc
+/home/hamid/Desktop/project3/devel/.private/lwr_defs/share/lwr_defs/cmake/lwr_defsConfig-version.cmake /home/hamid/Desktop/project3/devel/share/lwr_defs/cmake/lwr_defsConfig-version.cmake
+/home/hamid/Desktop/project3/devel/.private/lwr_defs/share/lwr_defs/cmake/lwr_defsConfig.cmake /home/hamid/Desktop/project3/devel/share/lwr_defs/cmake/lwr_defsConfig.cmake
